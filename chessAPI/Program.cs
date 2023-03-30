@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using chessAPI;
 using chessAPI.business.interfaces;
 using chessAPI.models.game;
+using chessAPI.models.piece;
 using chessAPI.models.player;
 using Microsoft.AspNetCore.Authorization;
 using Serilog;
@@ -67,6 +68,15 @@ try
     {
         var didSwap = await bs.swapTurn(id).ConfigureAwait(false);
         return didSwap ? Results.Ok() : Results.BadRequest();
+    });
+    #endregion
+
+    #region "Piece REST Commands"
+    app.MapPost("piece",
+    [AllowAnonymous] async (IPieceBusiness bs, clsNewPiece newPiece) =>
+    {
+        await bs.createPiece(newPiece).ConfigureAwait(false);
+        return Results.Ok();
     });
     #endregion
     #endregion

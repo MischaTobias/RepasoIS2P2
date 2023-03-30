@@ -48,7 +48,12 @@ app.get('/dapr/subscribe', (_req, res) => {
         {
             pubsubname: "pubsub",
             topic: "compressText",
-            route: "Compress"
+            route: "TryCompress"
+        },
+        {
+            pubsubname: "pubsub",
+            topic: "compress",
+            route: "compress"
         }
     ]);
 });
@@ -63,13 +68,23 @@ app.post('/B', (req, res) => {
     res.sendStatus(200);
 });
 
-app.post('/Compress', async (req, res) => {
-    console.log("Compress: ", req.body.data.message);
-    let compressed = lzbase62.compress(req.body.data.message);
-    await pubsubCollection.insertOne({ title: 'texto', value: req.body.data.message });
-    await pubsubCollection.insertOne({ title: 'comprimido', value: compressed });
+app.post('/TryCompress', async (req, res) => {
+    console.log("Try compress: ", req.body.data.message);
+    await axios.post(`${daprUrl}/publish/${pubsubName}/testText`, { message: req.body.data.message });
+    // let compressed = lzbase62.compress(req.body.data.message);
+    // await pubsubCollection.insertOne({ title: 'texto', value: req.body.data.message });
+    // await pubsubCollection.insertOne({ title: 'comprimido', value: compressed });
 
-    await axios.post(`${daprUrl}/publish/${pubsubName}/resultado`, { messageType: 'resultado', message: compressed });
+    res.sendStatus(200);
+});
+
+app.post('/compress', async (req, res) => {
+    console.log("compress: ", req.body.data.message);
+    let compressed = lzbase62.compress(req.body.data.message);
+    console.log("compressed: ", compressed);
+    // await pubsubCollection.insertOne({ title: 'texto', value: req.body.data.message });
+    // await pubsubCollection.insertOne({ title: 'comprimido', value: compressed });
+
     res.sendStatus(200);
 });
 

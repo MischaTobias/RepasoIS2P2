@@ -53,6 +53,9 @@ where TI : struct, IEquatable<TI>
         builder.Register(c => c.Resolve<IMongoDatabase>().GetCollection<clsGameEntityModel>("games"))
             .InstancePerDependency()
             .As<IMongoCollection<clsGameEntityModel>>();
+        builder.Register(c => c.Resolve<IMongoDatabase>().GetCollection<clsPieceEntityModel>("pieces"))
+            .InstancePerDependency()
+            .As<IMongoCollection<clsPieceEntityModel>>();
         #endregion
 
         #region "Queries"
@@ -73,6 +76,9 @@ where TI : struct, IEquatable<TI>
         builder.Register(c => new clsGameRepository(c.Resolve<IMongoCollection<clsGameEntityModel>>()))
             .InstancePerDependency()
             .As<IGameRepository>();
+        builder.Register(c => new clsPieceRepository(c.Resolve<IMongoCollection<clsPieceEntityModel>>()))
+            .InstancePerDependency()
+            .As<IPieceRepository>();
         #endregion
 
         #region "Kaizen Entity Factories"
@@ -90,6 +96,9 @@ where TI : struct, IEquatable<TI>
         builder.Register(c => new clsGameBusiness(c.Resolve<IGameRepository>()))
                .InstancePerDependency()
                .As<IGameBusiness>();
+        builder.Register(c => new clsPieceBusiness(c.Resolve<IPieceRepository>()))
+               .InstancePerDependency()
+               .As<IPieceBusiness>();
         #endregion
     }
 }
